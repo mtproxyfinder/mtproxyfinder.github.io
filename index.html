@@ -69,6 +69,7 @@
         const connectToProxy = (proxy) => {
             // Add your custom logic here to connect to the selected proxy
             console.log('Connecting to proxy:', proxy);
+            let tglink = proxy.replace("https://t.me/", "tg://");
             window.open(proxy, '_blank');
         };
 
