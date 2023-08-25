@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MTProxy Finder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .proxy-card {
+            margin-bottom: 10px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .proxy-button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">MTProxy Finder</h1>
+        <div id="proxyList"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const proxyUrl = 'https://raw.githubusercontent.com/mtproxyfinder/proxylist';
+
+        const fetchProxies = async () => {
+            try {
+                const response = await axios.get(proxyUrl);
+                const proxies = response.data.split('\n');
+                displayProxies(proxies);
+            } catch (error) {
+                console.error('Error fetching proxies:', error);
+            }
+        };
+
+        const displayProxies = (proxies) => {
+            const proxyList = document.getElementById('proxyList');
+
+            proxies.forEach((proxy, index) => {
+                if (proxy.trim().length > 0) {
+                    const proxyCard = document.createElement('div');
+                    proxyCard.className = 'card proxy-card';
+
+                    const proxyText = document.createElement('p');
+                    proxyText.className = 'card-text';
+                    proxyText.textContent = 'Proxy: ' + proxy;
+
+                    const button = document.createElement('button');
+                    button.className = 'btn btn-primary proxy-button';
+                    button.textContent = 'Connect';
+                    button.addEventListener('click', () => connectToProxy(proxy));
+                    
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'btn btn-primary proxy-button';
+                    copyButton.textContent = 'Copy';
+                    copyButton.addEventListener('click', () => copyToClipboard(proxy));
+
+                    proxyCard.appendChild(proxyText);
+                    proxyCard.appendChild(button);
+                    proxyList.appendChild(proxyCard);
+                    proxyCard.appendChild(copyButton);
+                }
+            });
+        };
+
+        const connectToProxy = (proxy) => {
+            // Add your custom logic here to connect to the selected proxy
+            console.log('Connecting to proxy:', proxy);
+            window.open(proxy, '_blank');
+        };
+
+        const copyToClipboard = (proxy) => {
+            const input = document.createElement('input');
+            input.value = proxy;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            alert('Proxy copied to clipboard!');
+        };
+
+        // Fetch proxies on page load
+        fetchProxies();
+    </script>
+
+    <footer class="text-center mt-4">
+      <p>View this project on <a href="https://github.com/mtproxyfinder">GitHub</a>, <a href="t.me/mtproxyfinder">Telegram</a></p>
+    </footer>
+</body>
+</html>
